@@ -18,10 +18,7 @@
   },
   "homepage": "https://github.com/ngovanhuong94/simple-web-on-nodejs#readme",
   "dependencies": {
-<<<<<<< 8ba0b318fe2c9e252bc742f6e5efa4fb6908af2f
-=======
     "bcryptjs": "^2.4.3",
->>>>>>> add model user and seed folder to load default data
     "body-parser": "^1.18.2",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
