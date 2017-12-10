@@ -1,42 +1,48 @@
+require('dotenv').config()
+
 var express = require("express");
+var bodyParser = require('body-parser')
+var session = require('express-session')
+var passport = require('passport')
+var mongoose = require('mongoose')
+var flash = require('connect-flash')
+var MongoStore = require('connect-mongo')(session)
+
+// setup mongoose and passport
+
+require('./config/mongoose');
+require('./config/passport');
+
+// setup express Server
 var app = express()
 
-app.use(express.static("public"));
+// setup template and views folder
 app.set("view engine", "ejs");
 app.set("views", "./views");
+// setup static files
+app.use(express.static("public"));
+// setup middlewares
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(session({
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET,
+  store: new MongoStore({ mongooseConnection: mongoose.connection})
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+
+
+// routes
+var adminRoutes = require('./routes/admin')
+var publicRoutes = require('./routes/public')
+
+app.use('/', publicRoutes)
+app.use('/admin', adminRoutes)
 
 
 
-app.get('/', (req, res) => {
-    res.render('index')
-})
 
-app.get('/about', (req, res) => {
-    res.render('about')
-})
-
-app.get('/post', (req, res) => {
-    res.render('post')
-})
-
-app.get('/contact', (req, res) => {
-    res.render('contact')
-})
-app.get('/admin', (req, res) => {
-    res.render('admin')
-})
-app.get('/login', (req, res) => {
-    res.render('login')
-})
-
-app.get('/admin/add', (req, res) => {
-    res.render('add')
-})
-
-app.get('/admin/all-post', (req, res) => {
-    res.render('allpost')
-})
-
-
-
-app.listen(8080, () => console.log("Server is running"))
+// run server on port
+app.listen(process.env.PORT || 8080, () => console.log("Server is running"))
