@@ -11,3 +11,6 @@ mongoose.connection.on('connected', () => {
 mongoose.connection.on('error', (error) => {
   console.log(error)
 })
+
+require('../models/User')
+require('../models/Post')

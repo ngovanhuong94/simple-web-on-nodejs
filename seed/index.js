@@ -29,7 +29,7 @@ User.remove({}, function (err){
 	var user2 = new User({
 		name: 'user',
 		email: 'test@gmail.com',
-		password: '1234566'
+		password: '123456'
 	})
 
 	user2.save(function (err) {

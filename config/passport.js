@@ -1,11 +1,11 @@
 var passport = require('passport')
-var LocalStrategy = require('passport-local').Strategy;
+  , LocalStrategy = require('passport-local').Strategy;
 var User  = require('../models/User')
 
 
 
 passport.serializeUser(function (user, done){
-  done(null, user.id)
+  done(null, user._id)
 })
 
 passport.deserializeUser(function (id, done) {
@@ -16,15 +16,14 @@ passport.deserializeUser(function (id, done) {
 
 
 passport.use(new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password',
-    passReqToCallback: true
-  }, function (req, email, password, done) {
+     usernameField: 'email'
+   },
+  function(email, password, done) {
     User.findOne({ email: email}, function (err, user) {
-      if (er) return done(err)
-      if (!user) return done(null, false, {message: 'email or password was invalid'})
-      var validPassword = user.comparePassword(password);
-      if (validPassword) return done(null, user);
-      return done(null, false, {message: 'email or password was invalid'})
+      if (err) return done(err)
+      if (!user) return done(null, false, {message: 'email or password was incorrected'})
+      if (!user.comparePassword) return done(null, false, {message: 'email or password was incorrected'})
+      return done(null, user)
     })
-}))
+  }
+));
