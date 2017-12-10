@@ -34,7 +34,7 @@ var UserSchema = new mongoose.Schema({
 */
 UserSchema.pre('save', (next) => {
 	var user = this
-	if (!user.modifiedPassword('password')) return next()
+	if (!user.isModified('password')) return next()
 
 	bcrypt.genSalt(10, function (err, salt) {
 		if (err) return next(err)
