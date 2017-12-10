@@ -6,7 +6,9 @@ router.get('/', (req,res) => {
 })
 
 router.get('/login', (req,res) => {
-  res.render('admin/login')
+  res.render('admin/login', {
+  	message: req.flash('message')
+  })
 })
 
 router.get('/add', (req,res) => {

@@ -16,14 +16,15 @@ passport.deserializeUser(function (id, done) {
 
 
 passport.use(new LocalStrategy({
-     usernameField: 'email'
+     usernameField: 'email',
+     passReqToCallback: true
    },
-  function(email, password, done) {
+  function(req, email, password, done) {
     User.findOne({ email: email}, function (err, user) {
-      if (err) return done(err)
-      if (!user) return done(null, false, {message: 'email or password was incorrected'})
-      if (!user.comparePassword) return done(null, false, {message: 'email or password was incorrected'})
-      return done(null, user)
+      if (err) return done(err);
+      if (!user)  return done(null, false,req.flash('message','Invalid email or password'));
+      if (!user.comparePassword) return done(null, false,req.flash('message','Invalid email or password' ));
+      return done(null, user);
     })
   }
 ));

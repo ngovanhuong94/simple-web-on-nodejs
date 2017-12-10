@@ -51,6 +51,9 @@
                                     <input class="form-control" placeholder="Password" name="password" type="password" value="">
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
+                                <% if (message.length > 0)  {%>
+                                <div class="alert alert-danger"><%= message %></div>
+                                <% } %>
                                 <button type="submit" class="btn btn-lg btn-success btn-block">Login</button>
                             </fieldset>
                         </form>
