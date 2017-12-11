@@ -49,7 +49,7 @@ PostControllers.addNewPost = (req,res) => {
 			req.files.image.originalFilename !== '') {
 			var dateUploadFile = new Date;
 			var tmp_path = req.files.image.path;
-			var target_path = './public/img/' + dateUploadFile +req.files.image.name;
+			var target_path = ('./public/img/' + dateUploadFile +req.files.image.name).replace(/ /g,'');
 
 			console.log('tmp_path: ', tmp_path);
 			console.log('target_path: ', target_path);
@@ -61,7 +61,7 @@ PostControllers.addNewPost = (req,res) => {
 							res.redirect('/admin/add')
 						} else {
 							console.log('saved a file')
-							post.imageUrl = 'img/' + dateUploadFile + req.files.image.name;
+							post.imageUrl = ('img/' + dateUploadFile + req.files.image.name).replace(/ /g,'');
 							post.save(function (err) {
 								if (err) {
 									// res.status(400).send({success: 'fail save post'})
