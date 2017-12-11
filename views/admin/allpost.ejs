@@ -16,6 +16,9 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">All post</h1>
+                        <% if (message.length !== 0) {%>
+                      <div class="alert alert-danger"><%= message %></div>
+                      <% } %>
                     </div>
                     <div class="col-lg-12">
                         <div class="panel panel-default">
@@ -40,21 +43,21 @@
                                                     <tr role="row">
                                                         <th>Title</th>
                                                         <th>Descriptions</th>
-                                                        <th>Content</th>
                                                         <th>Created</th>
                                                         <th>Author</th>
                                                         <th>imageUrl</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                  <% for (var index = 0; index < posts.length; index++) {%>
                                                     <tr class="gradeA odd" role="row">
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
+                                                        <td><a href="/admin/all-post/<%= posts[index]._id%>/edit"><%= posts[index].title %></a></td>
+                                                        <td><%= posts[index].descriptions %></td>
+                                                        <td><%= posts[index].created.toDateString() %></td>
+                                                        <td><%= posts[index].author %></td>
+                                                        <td><%= posts[index].imageUrl %></td>
                                                     </tr>
+                                                  <% } %>
                                                 </tbody>
                                             </table>
                                         </div>

@@ -1,4 +1,5 @@
 var Post = require('../models/Post')
+var fs = require('fs');
 
 
 var PostControllers = {}
@@ -28,6 +29,70 @@ PostControllers.getPostDetails = (req, res) => {
 			post: post
 		})
 	})
+}
+
+PostControllers.addNewPost = (req,res) => {
+
+	try {
+		var {title, descriptions, content} = req.body;
+		var user = req.user;
+		var post = new Post({
+			title: title,
+			descriptions: descriptions,
+			content: content,
+			author: user.name
+		})
+		console.log('req.files: ',req.files)
+		if (req.files &&
+			req.files.image &&
+			req.files.image.path &&
+			req.files.image.originalFilename !== '' &&
+		  req.files.image.headers.size > 0) {
+			var dateUploadFile = new Date;
+			var tmp_path = req.files.image.path;
+			var target_path = './public/img/' + dateUploadFile +req.files.image.name;
+
+			console.log('tmp_path: ', tmp_path);
+			console.log('target_path: ', target_path);
+			fs.readFile(tmp_path, function (err, data) {
+				fs.writeFile(target_path, data, function (err) {
+						if (err) {
+							// res.status(500).send({success: 'file upload error'})
+							req.flash('error', 'Failed to upload your file')
+							res.redirect('/admin/add')
+						} else {
+							post.imageUrl = 'img/' + dateUploadFile + req.files.image.name;
+							post.save(function (err) {
+								if (err) {
+									// res.status(400).send({success: 'fail save post'})
+									req.flash('error', 'Failed to save post !')
+									res.redirect('/admin/add')
+								} else {
+									req.flash('message', 'You created a post');
+									res.redirect('/admin/all-post')
+								}
+							})
+						}
+				})
+			})
+		} else {
+			post.save(function (err) {
+				if (err) {
+					// res.status(400).send({success: 'fail save post'})
+					req.flash('error', 'Failed to save post !')
+					res.redirect('/admin/add')
+				} else {
+					req.flash('message', 'You created a post');
+					res.redirect('/admin/all-post')
+				}
+			})
+		}
+	} catch (err) {
+		req.flash('error', 'An error occured trying to create a post')
+		return res.redirect('/admin/add')
+	}
+
+
 }
 
 module.exports = PostControllers

@@ -20,7 +20,7 @@ var app = express()
 app.set("view engine", "ejs");
 app.set("views", "./views");
 // setup static files
-app.use(express.static("public"));
+app.use('/static', express.static("public"));
 app.use(flash())
 // setup middlewares
 app.use(bodyParser.json())
