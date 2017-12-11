@@ -46,8 +46,7 @@ PostControllers.addNewPost = (req,res) => {
 		if (req.files &&
 			req.files.image &&
 			req.files.image.path &&
-			req.files.image.originalFilename !== '' &&
-		  req.files.image.headers.size > 0) {
+			req.files.image.originalFilename !== '') {
 			var dateUploadFile = new Date;
 			var tmp_path = req.files.image.path;
 			var target_path = './public/img/' + dateUploadFile +req.files.image.name;
@@ -61,10 +60,13 @@ PostControllers.addNewPost = (req,res) => {
 							req.flash('error', 'Failed to upload your file')
 							res.redirect('/admin/add')
 						} else {
+							console.log('saved a file')
 							post.imageUrl = 'img/' + dateUploadFile + req.files.image.name;
 							post.save(function (err) {
 								if (err) {
 									// res.status(400).send({success: 'fail save post'})
+									fs.unlinkSync(target_path);
+									console.log('Delete the file')
 									req.flash('error', 'Failed to save post !')
 									res.redirect('/admin/add')
 								} else {
