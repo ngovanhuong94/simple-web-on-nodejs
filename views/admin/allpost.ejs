@@ -16,9 +16,9 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">All post</h1>
-                        <% if (message.length !== 0) {%>
-                      <div class="alert alert-danger"><%= message %></div>
-                      <% } %>
+                       <% if (message.length > 0)  {%>
+                       <%= message %>
+                       <% } %>
                     </div>
                     <div class="col-lg-12">
                         <div class="panel panel-default">
@@ -46,6 +46,7 @@
                                                         <th>Created</th>
                                                         <th>Author</th>
                                                         <th>imageUrl</th>
+                                                        <th>Image</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -56,6 +57,7 @@
                                                         <td><%= posts[index].created.toDateString() %></td>
                                                         <td><%= posts[index].author %></td>
                                                         <td><%= posts[index].imageUrl %></td>
+                                                        <td><img src="/static/<%= posts[index].imageUrl %>" width="100%"/></td>
                                                     </tr>
                                                   <% } %>
                                                 </tbody>

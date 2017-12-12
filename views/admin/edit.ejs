@@ -15,12 +15,16 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">Add new post</h1>
+                        <h1 class="page-header">Edit post</h1>
+                        <% if (error.length >0) {%>
+                         <div class="alert alert-danger"><%= error %></div>
+                        <% } %>
                     </div>
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <form action="/admin/add"  method="POST" enctype="multipart/form-data" role="form">
+                                <form action="/admin/all-post/edit" method="POST" enctype="multipart/form-data" role="form">
+                                    <input type="hidden" name="postId" value="<%= post._id%>" />
                                     <div class="form-group">
                                         <label>Post title</label>
                                         <input type="text" value="<%= post.title %>" class="form-control" name="title" id="" placeholder="Input field">
@@ -38,7 +42,7 @@
                                         <input type="text" class="form-control" value="<%= post.imageUrl%>" readonly>
                                         <input type="file" class="form-control" value=".txt" name="image">
                                     </div>
-                                    <button type="submit" class="btn btn-outline btn-primary btn-lg btn-block">Post</button>
+                                    <button type="submit" class="btn btn-outline btn-primary btn-lg btn-block">Edit</button>
                                 </form>
                             </div>
                         </div>

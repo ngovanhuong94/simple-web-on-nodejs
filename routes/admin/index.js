@@ -8,7 +8,12 @@ var Post = require('../../models/Post')
 
 
 router.get('/', isAuthenticated,(req,res) => {
-  res.render('admin/admin')
+  var message = req.flash('message')
+  var error = req.flash('error');
+  res.render('admin/admin', {
+    message: message,
+    error: error
+  })
 })
 
 router.get('/login',(req,res) => {
@@ -18,11 +23,13 @@ router.get('/login',(req,res) => {
 })
 
 router.get('/add', isAuthenticated,(req,res) => {
-  return res.render('admin/add')
+  var error = req.flash('error');
+  return res.render('admin/add', {
+    error: error
+  })
 })
 
 router.get('/all-post', isAuthenticated, (req,res) => {
-  console.log(req.flash('message'))
   var message = req.flash('message')
   Post.find({}, function (err, posts) {
     if (err) throw err;
@@ -37,10 +44,12 @@ router.get('/all-post', isAuthenticated, (req,res) => {
 
 router.get('/all-post/:postId/edit', isAuthenticated, (req,res) =>  {
   var postId = req.params.postId;
+  var error = req.flash('error');
   Post.findById(postId, function (err, post) {
     if (err) throw err;
     return res.render('admin/edit', {
-      post: post
+      post: post,
+      error: error
     })
   })
 })
@@ -51,4 +60,5 @@ router.post('/login', passport.authenticate('local', {
 }))
 
 router.post('/add', isAuthenticated ,multipart(), PostControllers.addNewPost)
+router.post('/all-post/edit', multipart(), PostControllers.editPost)
 module.exports = router;

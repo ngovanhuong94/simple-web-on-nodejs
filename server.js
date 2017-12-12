@@ -7,7 +7,7 @@ var passport = require('passport')
 var mongoose = require('mongoose')
 var flash = require('connect-flash')
 var MongoStore = require('connect-mongo')(session)
-
+var cookieParser = require('cookie-parser')
 // setup mongoose and passport
 
 require('./config/mongoose');
@@ -21,16 +21,19 @@ app.set("view engine", "ejs");
 app.set("views", "./views");
 // setup static files
 app.use('/static', express.static("public"));
-app.use(flash())
+
 // setup middlewares
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(cookieParser())
 app.use(session({
   resave: false,
   saveUninitialized: false,
   secret: process.env.SESSION_SECRET,
   store: new MongoStore({ mongooseConnection: mongoose.connection})
 }))
+
+app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
 

@@ -31,70 +31,63 @@ PostControllers.getPostDetails = (req, res) => {
 	})
 }
 
-PostControllers.addNewPost = (req,res) => {
-
+PostControllers.addNewPost = async (req,res) => {
+	var {title, content, descriptions} = req.body;
+	var user = req.user;
 	try {
-		var {title, descriptions, content} = req.body;
-		var user = req.user;
 		var post = new Post({
-			title: title,
-			descriptions: descriptions,
-			content: content,
-			author: user.name
-		})
-		console.log('req.files: ',req.files)
-		if (req.files &&
-			req.files.image &&
-			req.files.image.path &&
-			req.files.image.originalFilename !== '') {
-			var dateUploadFile = new Date;
-			var tmp_path = req.files.image.path;
-			var target_path = ('./public/img/' + dateUploadFile +req.files.image.name).replace(/ /g,'');
+		title: title,
+		content: content,
+		descriptions: descriptions,
+		author: user.name
+	    })
+	    if (req.files.image.originalFilename !== '') {
+	    	var timeUpload = new Date;
+	    	var tmp_path = req.files.image.path;
+	    	var target_path = ('./public/img/'+ timeUpload + req.files.image.name).replace(/ /g,'');
+	    	var data = fs.readFileSync(tmp_path);
+	    	fs.writeFileSync(target_path, data);
+	    	post.imageUrl = ('img/'+ timeUpload+ req.files.image.name).replace(/ /g,'');
+	    }
+	    await post.save();
+	    req.flash('message', 'You created a post');
+	    res.redirect('/admin/all-post');
 
-			console.log('tmp_path: ', tmp_path);
-			console.log('target_path: ', target_path);
-			fs.readFile(tmp_path, function (err, data) {
-				fs.writeFile(target_path, data, function (err) {
-						if (err) {
-							// res.status(500).send({success: 'file upload error'})
-							req.flash('error', 'Failed to upload your file')
-							res.redirect('/admin/add')
-						} else {
-							console.log('saved a file')
-							post.imageUrl = ('img/' + dateUploadFile + req.files.image.name).replace(/ /g,'');
-							post.save(function (err) {
-								if (err) {
-									// res.status(400).send({success: 'fail save post'})
-									fs.unlinkSync(target_path);
-									console.log('Delete the file')
-									req.flash('error', 'Failed to save post !')
-									res.redirect('/admin/add')
-								} else {
-									req.flash('message', 'You created a post');
-									res.redirect('/admin/all-post')
-								}
-							})
-						}
-				})
-			})
-		} else {
-			post.save(function (err) {
-				if (err) {
-					// res.status(400).send({success: 'fail save post'})
-					req.flash('error', 'Failed to save post !')
-					res.redirect('/admin/add')
-				} else {
-					req.flash('message', 'You created a post');
-					res.redirect('/admin/all-post')
-				}
-			})
-		}
 	} catch (err) {
-		req.flash('error', 'An error occured trying to create a post')
-		return res.redirect('/admin/add')
+		console.log(err);
+		req.flash('error', 'An error occured trying to create a post');
+		return res.redirect('/admin/add');
 	}
-
-
 }
 
+PostControllers.editPost = async function (req,res) {
+	var {title, content, descriptions, postId} = req.body;
+
+	try {
+		var post = await Post.findById(postId).exec();
+		post.title = title;
+		post.content = content;
+		post.descriptions = descriptions;
+		if (req.files.image.originalFilename !== '') {
+	    	var timeUpload = new Date;
+	    	var tmp_path = req.files.image.path;
+	    	var target_path = ('./public/img/'+ timeUpload + req.files.image.name).replace(/ /g,'');
+	    	var oldImagePath = './public/'+ post.imageUrl;
+	    	
+	    	var data = fs.readFileSync(tmp_path);
+	    	fs.writeFileSync(target_path, data);
+	    	post.imageUrl = ('img/'+ timeUpload+ req.files.image.name).replace(/ /g,'');
+
+	    	if (oldImagePath !== './public/img/bg-post.jpg') {
+	    		fs.unlinkSync(oldImagePath);
+	    	}
+	    }
+		await post.save()
+		return res.redirect('/admin/all-post')
+	} catch (err) {
+		console.log(err);
+		req.flash('error', 'An error occured trying to update a post');
+		return res.redirect(`/admin/all-post/${postId}/edit`)
+	}
+}
 module.exports = PostControllers
