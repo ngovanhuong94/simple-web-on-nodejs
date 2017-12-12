@@ -6,7 +6,7 @@ var isAuthenticated = require('../../policies/isAuthenticated');
 var Post = require('../../models/Post')
 
 
-
+// render dashboard page
 router.get('/', isAuthenticated, (req,res) => {
   var message = req.flash('message')
   var error = req.flash('error');
@@ -16,33 +16,32 @@ router.get('/', isAuthenticated, (req,res) => {
   })
 })
 
+// render login page
 router.get('/login', (req,res) => {
   res.render('admin/login', {
   	message: req.flash('message')
   })
 })
 
+// render add page
 router.get('/add', isAuthenticated, (req,res) => {
   var error = req.flash('error');
   return res.render('admin/add', {
     error: error
   })
 })
+
+// redirect to all-post first page 
 router.get('/all-post', function (req,res) {
   return res.redirect('/admin/all-post/1')
 })
+
+//render all-post page with parameter page
 router.get('/all-post/:page', isAuthenticated, (req,res) => {
   var message = req.flash('message');
   var perPage = 6;
   var page = req.params.page || 1;
 
-  // Post.find({}, function (err, posts) {
-  //   if (err) throw err;
-  //   return res.render('admin/allpost', {
-  //     message: message,
-  //     posts: posts
-  //   })
-  // })
   Post.find({})
       .skip((perPage * page) - perPage)
       .limit(perPage)
@@ -61,7 +60,7 @@ router.get('/all-post/:page', isAuthenticated, (req,res) => {
       })
 })
 
-
+// render edit admin
 router.get('/all-post/:postId/edit', isAuthenticated, (req,res) =>  {
   var postId = req.params.postId;
   var error = req.flash('error');
@@ -73,15 +72,18 @@ router.get('/all-post/:postId/edit', isAuthenticated, (req,res) =>  {
     })
   })
 })
-
+// login with passport.js
 router.post('/login', passport.authenticate('local', {
 	successRedirect: '/admin',
 	failureRedirect: '/admin/login',
 	failureFlash: true
 }))
 
+// add new post
 router.post('/add', isAuthenticated ,multipart(), PostControllers.addNewPost)
+// edit post
 router.post('/all-post/edit', isAuthenticated, multipart(), PostControllers.editPost);
+// delete post
 router.post('/all-post/delete', isAuthenticated, PostControllers.deletePost);
 
 

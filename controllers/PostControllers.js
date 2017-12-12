@@ -4,19 +4,28 @@ var fs = require('fs');
 
 var PostControllers = {}
 
-PostControllers.getAllPosts = (req,res) => {
-	Post.find({}).sort({date: -1}).exec(function (err, posts){
-		if (err) {
-			console.log(err);
-			return res.render('notfound');
-		}
+// get all post from database
+PostControllers.getAllPosts = async (req,res) => {
+	var page = parseInt(req.query.page || '1');
+	var count  = await Post.count({});
+	var perPage = 3;
+    console.log('page: ', page);
+    console.log('count: ', count);
+    console.log('perPage: ', perPage);
 
-		return res.render('allpost', {
-			posts: posts
-		})
-	})
+	var posts = await Post.find({})
+	            .sort({date: -1})
+	            .skip(perPage * page - perPage)
+	            .limit(perPage).exec()
+	return res.render('public/index', {
+		posts: posts,
+		count: count,
+		perPage: perPage,
+		page: page
+	})            
 }
 
+//get detail page
 PostControllers.getPostDetails = (req, res) => {
 	var postId = req.params.postId;
 
@@ -31,6 +40,7 @@ PostControllers.getPostDetails = (req, res) => {
 	})
 }
 
+// add new post (admin control)
 PostControllers.addNewPost = async (req,res) => {
 	var {title, content, descriptions} = req.body;
 	var user = req.user;
@@ -60,6 +70,7 @@ PostControllers.addNewPost = async (req,res) => {
 	}
 }
 
+// edit post (admin control)
 PostControllers.editPost = async function (req,res) {
 	var {title, content, descriptions, postId} = req.body;
 
@@ -90,7 +101,7 @@ PostControllers.editPost = async function (req,res) {
 		return res.redirect(`/admin/all-post/${postId}/edit`)
 	}
 }
-
+// delete post (admin control)
 PostControllers.deletePost = async function (req,res) {
 	var {postId} = req.body;
 	try {
