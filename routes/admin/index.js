@@ -60,5 +60,8 @@ router.post('/login', passport.authenticate('local', {
 }))
 
 router.post('/add', isAuthenticated ,multipart(), PostControllers.addNewPost)
-router.post('/all-post/edit', multipart(), PostControllers.editPost)
+router.post('/all-post/edit', isAuthenticated, multipart(), PostControllers.editPost);
+router.post('/all-post/delete', isAuthenticated, PostControllers.deletePost);
+
+
 module.exports = router;

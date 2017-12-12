@@ -44,6 +44,10 @@
                                     </div>
                                     <button type="submit" class="btn btn-outline btn-primary btn-lg btn-block">Edit</button>
                                 </form>
+                                <form action="/admin/all-post/delete" method="post" role="form">
+                                    <input type="hidden" name="postId" value="<%= post._id%>">
+                                    <button type="submit" class="btn btn-outline btn-danger btn-lg btn-block">Delete</button>
+                                </form>
                             </div>
                         </div>
                     </div>
