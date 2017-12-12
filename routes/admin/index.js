@@ -7,7 +7,7 @@ var Post = require('../../models/Post')
 
 
 
-router.get('/', isAuthenticated,(req,res) => {
+router.get('/', isAuthenticated, (req,res) => {
   var message = req.flash('message')
   var error = req.flash('error');
   res.render('admin/admin', {
@@ -16,29 +16,49 @@ router.get('/', isAuthenticated,(req,res) => {
   })
 })
 
-router.get('/login',(req,res) => {
+router.get('/login', (req,res) => {
   res.render('admin/login', {
   	message: req.flash('message')
   })
 })
 
-router.get('/add', isAuthenticated,(req,res) => {
+router.get('/add', isAuthenticated, (req,res) => {
   var error = req.flash('error');
   return res.render('admin/add', {
     error: error
   })
 })
+router.get('/all-post', function (req,res) {
+  return res.redirect('/admin/all-post/1')
+})
+router.get('/all-post/:page', isAuthenticated, (req,res) => {
+  var message = req.flash('message');
+  var perPage = 6;
+  var page = req.params.page || 1;
 
-router.get('/all-post', isAuthenticated, (req,res) => {
-  var message = req.flash('message')
-  Post.find({}, function (err, posts) {
-    if (err) throw err;
-    return res.render('admin/allpost', {
-      message: message,
-      posts: posts
-    })
-  })
-
+  // Post.find({}, function (err, posts) {
+  //   if (err) throw err;
+  //   return res.render('admin/allpost', {
+  //     message: message,
+  //     posts: posts
+  //   })
+  // })
+  Post.find({})
+      .skip((perPage * page) - perPage)
+      .limit(perPage)
+      .exec(function (err, posts) {
+        Post.count().exec(function (err, count) {
+          if (err) throw err;
+          return res.render('admin/allpost', {
+            posts: posts,
+            current: page,
+            message: message,
+            perPage: perPage,
+            count: count,
+            pages: Math.ceil(count / perPage)
+          })
+        })
+      })
 })
 
 
@@ -53,6 +73,7 @@ router.get('/all-post/:postId/edit', isAuthenticated, (req,res) =>  {
     })
   })
 })
+
 router.post('/login', passport.authenticate('local', {
 	successRedirect: '/admin',
 	failureRedirect: '/admin/login',

@@ -66,39 +66,63 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <div class="dataTables_info" id="dataTables-example_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries</div>
+                                            <div class="dataTables_info" id="dataTables-example_info" role="status" aria-live="polite">Showing <%= ((current-1)*perPage) + 1%> to <%= (current*perPage <= count) ? current*perPage : count %> of <%= count %></div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="dataTables_paginate paging_simple_numbers" id="dataTables-example_paginate">
+                                            <% if (pages >0) {%>
                                                 <ul class="pagination">
+                                                  <% if (current == 1) {%>
                                                     <li class="paginate_button previous disabled" aria-controls="dataTables-example"
                                                         tabindex="0" id="dataTables-example_previous">
-                                                        <a href="#">Previous</a>
+                                                        <a href="/admin/all-post/1">First</a>
                                                     </li>
-                                                    <li class="paginate_button active" aria-controls="dataTables-example"
+                                                   <% } else {%>
+                                                    <li class="paginate_button previous" aria-controls="dataTables-example"
+                                                        tabindex="0" id="dataTables-example_previous">
+                                                        <a href="/admin/all-post/1">First</a>
+                                                    </li>
+                                                   <% }%> 
+                                                   <% var i = (Number(current > 5) ? Number(current) - 4: 1 )%>
+                                                   <% if ( i !== 1) {%>
+                                                     <li class="paginate_button disabled" aria-controls="dataTables-example"
                                                         tabindex="0">
-                                                        <a href="#">1</a>
+                                                        <a href="#">...</a>
+                                                     </li>
+                                                   <% } %>
+                                                   <% for (; i <= (Number(current) + 4) && i <= pages; i++) {%>
+                                                   <% if ( i == current ) {%>
+                                                     <li class="paginate_button active" aria-controls="dataTables-example"
+                                                        tabindex="0">
+                                                        <a ><%= i %></a>
                                                     </li>
-                                                    <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-                                                        <a href="#">2</a>
+                                                   <% } else {%>
+                                                   <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
+                                                        <a href="/admin/all-post/<%= i %>"><%= i %></a>
                                                     </li>
-                                                    <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-                                                        <a href="#">3</a>
+                                                   <% } %>
+
+                                                   <% if (i == Number(current) + 4 && i <pages) {%>
+                                                   <li class="paginate_button disabled" aria-controls="dataTables-example"
+                                                        tabindex="0">
+                                                        <a href="#">...</a>
+                                                     </li>
+                                                   <% } %>
+                                                   <% } %>
+                                                   <% if  (current == pages) {%>
+                                                    <li class="paginate_button previous disabled" aria-controls="dataTables-example"
+                                                        tabindex="0" id="dataTables-example_previous">
+                                                        <a>Last</a>
                                                     </li>
-                                                    <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-                                                        <a href="#">4</a>
+                                                   <% } else {%>
+                                                   <li class="paginate_button previous" aria-controls="dataTables-example"
+                                                        tabindex="0" id="dataTables-example_previous">
+                                                        <a href="/admin/all-post/<%= pages %>">Last</a>
                                                     </li>
-                                                    <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-                                                        <a href="#">5</a>
-                                                    </li>
-                                                    <li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-                                                        <a href="#">6</a>
-                                                    </li>
-                                                    <li class="paginate_button next" aria-controls="dataTables-example" tabindex="0"
-                                                        id="dataTables-example_next">
-                                                        <a href="#">Next</a>
-                                                    </li>
+                                                   <% } %>
+                                                   
                                                 </ul>
+                                               <% } %> 
                                             </div>
                                         </div>
                                     </div>
