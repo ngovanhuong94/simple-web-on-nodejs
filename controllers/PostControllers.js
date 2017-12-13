@@ -9,9 +9,6 @@ PostControllers.getAllPosts = async (req,res) => {
 	var page = parseInt(req.query.page || '1');
 	var count  = await Post.count({});
 	var perPage = 3;
-    console.log('page: ', page);
-    console.log('count: ', count);
-    console.log('perPage: ', perPage);
 
 	var posts = await Post.find({})
 	            .sort({date: -1})

@@ -45,7 +45,6 @@
                                                         <th>Descriptions</th>
                                                         <th>Created</th>
                                                         <th>Author</th>
-                                                        <th>imageUrl</th>
                                                         <th>Image</th>
                                                     </tr>
                                                 </thead>
@@ -56,8 +55,7 @@
                                                         <td><%= posts[index].descriptions %></td>
                                                         <td><%= posts[index].created.toDateString() %></td>
                                                         <td><%= posts[index].author %></td>
-                                                        <td><%= posts[index].imageUrl %></td>
-                                                        <td><img src="/static/<%= posts[index].imageUrl %>" width="100%"/></td>
+                                                        <td><img src="/static/<%= posts[index].imageUrl %>" width="300px"/></td>
                                                     </tr>
                                                   <% } %>
                                                 </tbody>

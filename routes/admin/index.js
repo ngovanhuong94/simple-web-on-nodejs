@@ -4,15 +4,21 @@ var PostControllers = require('../../controllers/PostControllers')
 var multipart = require('connect-multiparty');
 var isAuthenticated = require('../../policies/isAuthenticated');
 var Post = require('../../models/Post')
-
+var User = require('../../models/User')
 
 // render dashboard page
-router.get('/', isAuthenticated, (req,res) => {
+router.get('/', isAuthenticated, async (req,res) => {
   var message = req.flash('message')
   var error = req.flash('error');
+  var posts = await Post.find().sort({created: -1}).limit(5).exec();
+  var count = await Post.count();
+  var countUser = await User.count();
   res.render('admin/admin', {
     message: message,
-    error: error
+    error: error,
+    posts: posts,
+    count: count,
+    countUser: countUser
   })
 })
 

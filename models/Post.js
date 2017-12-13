@@ -13,7 +13,8 @@ var PostSchema = new mongoose.Schema({
 	title: {
 		type: String,
 		trim: true,
-		required: true
+		required: true,
+		unique: true
 	},
 	descriptions: {
 		type: String,
@@ -37,7 +38,25 @@ var PostSchema = new mongoose.Schema({
 	imageUrl: {
 		type: String,
 		default: 'img/bg-post.jpg'
+	},
+	slug: {
+		type: String,
+		unique: true
 	}
+})
+
+function slugify (text) {
+	return text.toString().toLowerCase()
+	           .replace(/\s+/g, '-') 
+	           .replace(/[^\w\-]+/g, '')
+	           .replace(/\-\-+/g, '-') 
+	           .replace(/^-+/, '')
+	           .replace(/-+$/, '');
+}
+
+PostSchema.pre('save', function (next) {
+	this.slug = slugify(this.title);
+	next();
 })
 
 
