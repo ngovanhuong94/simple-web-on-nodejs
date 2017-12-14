@@ -70,7 +70,8 @@
                     <br>
                     <div id="success"></div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary" id="sendMessageButton">Send</button>
+                        <div id="status"></div>
+                        <button type="button" class="btn btn-primary" id="sendMessageButton">Send</button>
                     </div>
                 </form>
             </div>
@@ -81,7 +82,40 @@
 
     <!-- Footer -->
     <% include ./partial/footer %>
+<script type="text/javascript">
+ $('#sendMessageButton').click(function () {
+    var message = $('#message').val();
+    var phone = $('#phone').val();
+    var email = $('#email').val();
+    var name = $('#name').val();
 
+    console.log('name: ', name);
+    console.log('phone: ', phone);
+    console.log('email: ', email);
+    console.log('message: ', message);
+    if (email !== '' && name !== '' && phone !== '' && message !== '') {
+        $.ajax({
+        type: 'POST',
+        url: '/sendmail',
+        data: {
+            userName: name,
+            userEmail: email,
+            userPhone: phone,
+            userMessage: message
+        },
+        success: function (response) {
+            alert('You sent a message !')
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Sorry !, Something went wrong !')
+        }
+    })
+    } else {
+        alert('You must enter all inputs !')
+    }
+    
+ })
+</script>
 
 </body>
 
