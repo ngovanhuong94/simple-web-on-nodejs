@@ -70,7 +70,8 @@
                     <br>
                     <div id="success"></div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary" id="sendMessageButton" style="border-radius: 10px">Send</button>
+                        <div id="status"></div>
+                        <button type="button" class="btn btn-primary" id="sendMessageButton" style="border-radius: 10px;">Send</button>
                     </div>
                 </form>
             </div>
@@ -81,34 +82,38 @@
 
     <!-- Footer -->
     <% include ./partial/footer %>
-
-<!--javascript-->
-<script type="text/javascript" src="js/form.js">
-   /*$('#contactForm').submit(function(e){
-    var name = document.getElementById('name'),
-        email = document.getElementById('email'),
-        number = document.getElementById('phone')
-        message = document.getElementById('message');
-    if(!name.value || !email.value || !message.value || number.value){
-        alertify.error('Please check your entries')
-    }else {
+<script type="text/javascript">
+ $('#sendMessageButton').click(function () {
+    var message = $('#message').val();
+    var phone = $('#phone').val();
+    var email = $('#email').val();
+    var name = $('#name').val();
+    console.log('name: ', name);
+    console.log('phone: ', phone);
+    console.log('email: ', email);
+    console.log('message: ', message);
+    if (email !== '' && name !== '' && phone !== '' && message !== '') {
         $.ajax({
-            url: "mailto:hd.phamquangtuyen@gmail.com?subject=Message from ",
-            method:"POST",
-            data: $(this).serialize(),
-            dataType: "json"
-        })
-        e.preventDefault()
-        $(this).get(0).reset()
-        alertify.success('Message sent')
+        type: 'POST',
+        url: '/sendmail',
+        data: {
+            userName: name,
+            userEmail: email,
+            userPhone: phone,
+            userMessage: message
+        },
+        success: function (response) {
+            alert('You sent a message !')
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Sorry !, Something went wrong !')
+        }
+    })
+    } else {
+        alert('You must enter all inputs !')
     }
-   })*/
-   /*function send() {
-    var link = 'mailto:hd.phamquangtuyen@gmail.com?subject=Message from '
-             +document.getElementById('email').value
-             +'&body='+document.getElementById('email').value;
-    window.location.href = link;
-}*/
+    
+ })
 </script>
 </body>
 
