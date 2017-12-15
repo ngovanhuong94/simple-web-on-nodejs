@@ -9,7 +9,7 @@ PostControllers.getAllPosts = async (req,res) => {
 	var page = parseInt(req.query.page || '1');
 	var count  = await Post.count({});
 	var perPage = 3;
-
+	if (page > 0 && page < ((count/perPage) + 1)) {
 	var posts = await Post.find({})
 	            .sort({date: -1})
 	            .skip(perPage * page - perPage)
@@ -19,22 +19,26 @@ PostControllers.getAllPosts = async (req,res) => {
 		count: count,
 		perPage: perPage,
 		page: page
-	})            
+	})
+	} else {
+		return res.render('public/notfound')
+	}           
 }
 
 //get detail page
-PostControllers.getPostDetails = (req, res) => {
+PostControllers.getPostDetails = async (req, res) => {
 	var postId = req.params.postId;
+	try {
+		var post = await Post.findById(postId).exec();
 
-	Post.findById(postId, function (err, post) {
-		if (err) {
-			console.log(err);
-			return res.render('notfound')
-		}
 		return res.render('post', {
 			post: post
 		})
-	})
+
+	} catch (err) {
+		return res.render('public/notfound')
+	}
+	
 }
 
 // add new post (admin control)

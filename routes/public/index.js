@@ -6,16 +6,22 @@ var nodemailer = require('nodemailer');
 router.get('/', function (req,res) {
 	res.redirect('/q?page=1')
 })
+
 router.get('/about', (req,res) => {
   res.render('public/about')
 })
+
 router.get("/contact", (req,res) => {
   res.render('public/contact')
 })
+
 router.get('/post/:slug', (req, res) => {
   var slug = req.params.slug;	
   Post.findOne({slug: slug}, function (err, post) {
-  	res.render('public/post', {
+  	if (err || !post) {
+  		return res.render('public/notfound')
+  	}
+  	return res.render('public/post', {
   		post: post
   	})
   })
@@ -43,5 +49,8 @@ router.post('/sendmail', function (req,res,next) {
 	})
 })
 
+router.get('*', function (req,res) {
+	res.render('public/notfound')
+})
 
 module.exports = router
